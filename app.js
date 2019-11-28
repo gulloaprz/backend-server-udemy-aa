@@ -14,7 +14,12 @@ app.use(bodyParser.json());
 // Importar rutas
 var appRoutes = require("./routes/app");
 var usuarioRoutes = require("./routes/usuario");
-var loginRoutes = require("./routes/login");
+const loginRoutes = require("./routes/login");
+const hospitalRoutes = require("./routes/hospital");
+const medicoRoutes = require("./routes/medico");
+const busquedaRoutes = require("./routes/busqueda");
+const uploadRoutes = require("./routes/upload");
+const imagenesRoutes = require("./routes/imagenes");
 
 // conexión bd
 mongoose.connect("mongodb://localhost:27017/hospitalDB", (error, response) => {
@@ -26,6 +31,11 @@ mongoose.connect("mongodb://localhost:27017/hospitalDB", (error, response) => {
 // Rutas
 app.use("/usuario", usuarioRoutes);
 app.use("/login", loginRoutes);
+app.use("/hospital", hospitalRoutes);
+app.use("/medico", medicoRoutes);
+app.use("/busqueda", busquedaRoutes);
+app.use("/upload", uploadRoutes);
+app.use("/imagenes", imagenesRoutes);
 app.use("/", appRoutes);
 
 // excuchar puerto

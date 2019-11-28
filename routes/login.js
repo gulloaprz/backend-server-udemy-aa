@@ -38,7 +38,7 @@ app.post("/", (request, response) => {
     //  Crear token
     usuarioDB.password = ":)";
     const token = jwt.sign({ usuario: usuarioDB }, seed, {
-      expiresIn: 14400
+      expiresIn: 129600 // 32hrs
     }); // 4hrs
     response.status(200).json({
       head: "success",

@@ -13,19 +13,33 @@ var Usuario = require("../models/usuario");
 // Obtener todos los usuarios
 // =======================================
 app.get("/", (request, response) => {
-  Usuario.find({}, "nombre email img role").exec((errors, usuarios) => {
-    if (errors) {
-      response.status(500).json({
-        head: "error",
-        body: { message: "error cargando usuarios", errors }
-      });
-    }
+  const desde = Number(request.query.desde) || 0;
 
-    response.status(200).json({
-      head: "success",
-      body: usuarios
+  Usuario.find({}, "nombre email img role")
+    .skip(desde)
+    .limit(5)
+    .exec((errors, usuarios) => {
+      if (errors) {
+        response.status(500).json({
+          head: "error",
+          body: { message: "error cargando usuarios", errors }
+        });
+      }
+
+      Usuario.count((errorscount, count) => {
+        if (errorscount) {
+          response.status(500).json({
+            head: "error",
+            body: { message: "error al contar usuarios", errors: errorscount }
+          });
+        }
+
+        response.status(200).json({
+          head: "success",
+          body: { total: count, usuarios }
+        });
+      });
     });
-  });
 });
 
 // =======================================
@@ -58,7 +72,7 @@ app.post("/", mdAutenticacion.verificaToken, (request, response) => {
 });
 
 // =======================================
-// Actualizar nuevo usuario
+// Actualizar usuario
 // =======================================
 app.put("/:id", mdAutenticacion.verificaToken, (request, response) => {
   const id = request.params.id;
@@ -86,7 +100,7 @@ app.put("/:id", mdAutenticacion.verificaToken, (request, response) => {
     usuario.save((errorsave, usuarioDB) => {
       if (errorsave) {
         return response.status(500).json({
-          head: "success",
+          head: "error",
           body: { message: "Error al actualizar usuario", errors: errorsave }
         });
       }
@@ -94,7 +108,7 @@ app.put("/:id", mdAutenticacion.verificaToken, (request, response) => {
       usuarioDB.password = ":)";
 
       response.status(200).json({
-        head: "suscess",
+        head: "success",
         body: usuarioDB
       });
     });
